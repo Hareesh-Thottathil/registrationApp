@@ -27,122 +27,124 @@ class _FormSreenState extends State<FormSreen> {
         backgroundColor: Colors.white,
         title: const Text("Registration Form",style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold),),
       ),
-      body: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(10.0),
-            child: TextField(
-              controller: namecontroller,
-              decoration: const InputDecoration(
-                labelText: "Name",
-                hintText: "Name",
-                border: OutlineInputBorder(),
-              ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(10.0),
-            child: TextField(
-              controller: addressController,
-              decoration: const InputDecoration(
-                labelText: "Address",
-                hintText: "Address",
-                border: OutlineInputBorder(),
-              ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(10.0),
-            child: TextField(
-              controller: dobController,
-              decoration: const InputDecoration(
-                labelText: "Date of Birth",
-                hintText: "Date of Birth",
-                border: OutlineInputBorder(),
-              ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(10.0),
-            child: TextField(
-              controller: genderController,
-              decoration: const InputDecoration(
-                labelText: "Gender",
-                hintText: "Gender",
-                border: OutlineInputBorder(),
-              ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(10.0),
-            child: TextField(
-              controller: courseController,
-              decoration: const InputDecoration(
-                labelText: "Course",
-                hintText: "Course",
-                border: OutlineInputBorder(),
-              ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(10.0),
-            child: TextField(
-              controller: emailController,
-              decoration: const InputDecoration(
-                labelText: "Email Id",
-                hintText: "Email Id",
-                border: OutlineInputBorder(),
-              ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(10.0),
-            child: TextField(
-              controller: contactController,
-              decoration: const InputDecoration(
-                labelText: "Contact Number",
-                hintText: "Contact Number",
-                border: OutlineInputBorder(),
-              ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: SizedBox(
-              width: double.infinity,
-              height: 50,
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.blue[900],
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8)
-                  ),
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: TextField(
+                controller: namecontroller,
+                decoration: const InputDecoration(
+                  labelText: "Name",
+                  hintText: "Name",
+                  border: OutlineInputBorder(),
                 ),
-                onPressed: () {
-                  _showRegisterDialog();
-                },
-                child: const Text(
-                  "Register",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 16,
-                ),),
               ),
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-              child: ElevatedButton(
-                onPressed: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const RegisteredStudentScreen()));
-                },
-                child: const Text("Show Registred Students"),
+            Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: TextField(
+                controller: addressController,
+                decoration: const InputDecoration(
+                  labelText: "Address",
+                  hintText: "Address",
+                  border: OutlineInputBorder(),
+                ),
               ),
             ),
-        ],
+            Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: TextField(
+                controller: dobController,
+                decoration: const InputDecoration(
+                  labelText: "Date of Birth",
+                  hintText: "Date of Birth",
+                  border: OutlineInputBorder(),
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: TextField(
+                controller: genderController,
+                decoration: const InputDecoration(
+                  labelText: "Gender",
+                  hintText: "Gender",
+                  border: OutlineInputBorder(),
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: TextField(
+                controller: courseController,
+                decoration: const InputDecoration(
+                  labelText: "Course",
+                  hintText: "Course",
+                  border: OutlineInputBorder(),
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: TextField(
+                controller: emailController,
+                decoration: const InputDecoration(
+                  labelText: "Email Id",
+                  hintText: "Email Id",
+                  border: OutlineInputBorder(),
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: TextField(
+                controller: contactController,
+                decoration: const InputDecoration(
+                  labelText: "Contact Number",
+                  hintText: "Contact Number",
+                  border: OutlineInputBorder(),
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: SizedBox(
+                width: double.infinity,
+                height: 50,
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.blue[900],
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8)
+                    ),
+                  ),
+                  onPressed: () {
+                    _showRegisterDialog();
+                  },
+                  child: const Text(
+                    "Register",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 16,
+                  ),),
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+                child: ElevatedButton(
+                  onPressed: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const RegisteredStudentScreen()));
+                  },
+                  child: const Text("Show Registred Students"),
+                ),
+              ),
+          ],
+        ),
       ),
     );
   }
