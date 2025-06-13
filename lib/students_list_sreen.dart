@@ -44,7 +44,12 @@ class _RegisteredStudentScreenState extends State<RegisteredStudentScreen> {
     );
   }
    Widget getField(int index){
-      return Card(
+      return Dismissible(
+        key: ValueKey<Student>(studentList![index]),
+        background: Container(
+          color: Colors.blue[400],
+          child: const Icon(Icons.delete),
+        ),
         child: ListTile(leading:  const Icon(Icons.person,size: 50,),
         title: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -58,6 +63,45 @@ class _RegisteredStudentScreenState extends State<RegisteredStudentScreen> {
           ],
         ),
         ),
+        confirmDismiss: (DismissDirection direction){
+          return _alerDisplay(index);
+        },
       );
+  
+  }
+  Future<bool?> _alerDisplay(index) async {
+    bool? del= await
+    showDialog<bool>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text("Confirmation!"),
+          content: const Text(
+              "Are you sure you want to delete this item?"),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(false);
+              },
+              child: const Text("No"),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(true);
+                setState(() {
+                  studentList!.removeAt(index);
+                  saveStudentList(studentList!);
+                });
+                showSnackBar(context, "Item Deleted Successfully.");
+                
+              },
+              child: const Text("Yes"),
+            ),
+          ],
+        );
+      },
+    );
+    return del;
+    
   }
 }

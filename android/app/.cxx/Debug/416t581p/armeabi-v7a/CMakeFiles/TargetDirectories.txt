@@ -1,0 +1,2 @@
+C:/Users/ASUS/Desktop/DartProject/registration_app-main/registration_app-main/android/app/.cxx/Debug/416t581p/armeabi-v7a/CMakeFiles/edit_cache.dir
+C:/Users/ASUS/Desktop/DartProject/registration_app-main/registration_app-main/android/app/.cxx/Debug/416t581p/armeabi-v7a/CMakeFiles/rebuild_cache.dir

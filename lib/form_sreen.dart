@@ -1,3 +1,4 @@
+import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:project/form_model.dart';
 import 'package:project/functions.dart';
@@ -11,166 +12,385 @@ class FormSreen extends StatefulWidget {
 }
 
 class _FormSreenState extends State<FormSreen> {
-  List<Student> studentList = List.empty(growable: true);
-  final namecontroller = TextEditingController();
+  List<Student>? studentList = List.empty(growable: true);
+  final _formKey = GlobalKey<FormState>();
+  final nameController = TextEditingController();
   final addressController = TextEditingController();
   final dobController = TextEditingController();
-  final genderController = TextEditingController();
   final courseController = TextEditingController();
   final emailController = TextEditingController();
   final contactController = TextEditingController();
+  String? selectedGender;
+  String? selectedCourse;
+
+  final List<String> courses = [
+    '<Select a course>',
+    'Machine Learning and Artificial Intelligence',
+    'Data Science and Analytics',
+    'Cybersecurity Fundamentals',
+    'Cloud Computing and Architecture',
+    'Full Stack Web Development',
+    'Mobile App Development(Flutter)',
+    'Blockchain and Cryptocurrency',
+  ];
+
+  @override
+  void initState() {
+    super.initState();
+    _loadStudentList();
+  }
+
+  Future<void> _loadStudentList() async {
+    List<Student>? savedStudentList = await getStudentList();
+    setState(() {
+      if (savedStudentList != null) {
+        studentList = savedStudentList;
+      }
+    });
+  }
+
+  bool validEmail() {
+    if (emailController.text.isEmpty) {
+      return true;
+    }
+    return EmailValidator.validate(emailController.text);
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.white,
-        title: const Text("Registration Form",style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold),),
+        backgroundColor: Colors.blue[400],
+        title: const Text("Registration Form"),
+        centerTitle: true,
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: TextField(
-                controller: namecontroller,
-                decoration: const InputDecoration(
-                  labelText: "Name",
-                  hintText: "Name",
-                  border: OutlineInputBorder(),
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              Color.fromARGB(255, 19, 164, 255),
+              Color.fromARGB(255, 65, 206, 241),
+              Color.fromARGB(255, 143, 228, 254),
+            ],
+          ),
+        ),
+        child: SingleChildScrollView(
+          child: Form(
+            key: _formKey,
+            child: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: DropdownButtonFormField<String>(
+                    decoration: InputDecoration(
+                      fillColor: Colors.white,
+                      filled: true,
+                      label: labelWithAsterisk("Course"),
+                      border: const OutlineInputBorder(),
+                    ),
+                    value: selectedCourse,
+                    items: courses
+                        .map((course) => DropdownMenuItem<String>(
+                              value:
+                                  course == '<Select a course>' ? null : course,
+                              child: Text(course),
+                            ))
+                        .toList(),
+                    onChanged: (value) {
+                      setState(() {
+                        selectedCourse = value;
+                      });
+                    },
+                    validator: (value) {
+                      if (value == null ||
+                          value.isEmpty ||
+                          value == '<Select a course>') {
+                        return 'Please select a course';
+                      }
+                      return null;
+                    },
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
+                  ),
                 ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: TextField(
-                controller: addressController,
-                decoration: const InputDecoration(
-                  labelText: "Address",
-                  hintText: "Address",
-                  border: OutlineInputBorder(),
+                Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: TextFormField(
+                    controller: nameController,
+                    decoration: InputDecoration(
+                      fillColor: Colors.white,
+                      filled: true,
+                      label: labelWithAsterisk("Name"),
+                      hintText: "Name",
+                      border: const OutlineInputBorder(),
+                    ),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return "Please fill this field.";
+                      }
+                      return null;
+                    },
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
+                  ),
                 ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: TextField(
-                controller: dobController,
-                decoration: const InputDecoration(
-                  labelText: "Date of Birth",
-                  hintText: "Date of Birth",
-                  border: OutlineInputBorder(),
+                Row(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(
+                          left: 10, right: 0, top: 10, bottom: 10),
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 10.0, vertical: 10),
+                        decoration: BoxDecoration(
+                          border: Border.all(color: Colors.grey),
+                          borderRadius: const BorderRadius.only(
+                            topLeft: Radius.circular(4.0),
+                            bottomLeft: Radius.circular(4.0),
+                          ),
+                          color: Colors.white,
+                        ),
+                        child: const Center(
+                          child: Text(
+                            "+91",
+                            style: TextStyle(fontSize: 16),
+                          ),
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.all(10.0),
+                        child: TextFormField(
+                          controller: contactController,
+                          decoration: InputDecoration(
+                            fillColor: Colors.white,
+                            filled: true,
+                            label: labelWithAsterisk("Contact Number"),
+                            hintText: "Contact Number",
+                            border: const OutlineInputBorder(),
+                          ),
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return "Please fill this field.";
+                            }
+                            if (value.trim().length != 10) {
+                              return "Number Not Valid.";
+                            }
+                            return null;
+                          },
+                          autovalidateMode: AutovalidateMode.onUserInteraction,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: TextField(
-                controller: genderController,
-                decoration: const InputDecoration(
-                  labelText: "Gender",
-                  hintText: "Gender",
-                  border: OutlineInputBorder(),
-                ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: TextField(
-                controller: courseController,
-                decoration: const InputDecoration(
-                  labelText: "Course",
-                  hintText: "Course",
-                  border: OutlineInputBorder(),
-                ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: TextField(
-                controller: emailController,
-                decoration: const InputDecoration(
-                  labelText: "Email Id",
-                  hintText: "Email Id",
-                  border: OutlineInputBorder(),
-                ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: TextField(
-                controller: contactController,
-                decoration: const InputDecoration(
-                  labelText: "Contact Number",
-                  hintText: "Contact Number",
-                  border: OutlineInputBorder(),
-                ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: SizedBox(
-                width: double.infinity,
-                height: 50,
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.blue[900],
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8)
+                Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: TextFormField(
+                    maxLines: 4,
+                    keyboardType: TextInputType.multiline,
+                    controller: addressController,
+                    decoration: const InputDecoration(
+                      fillColor: Colors.white,
+                      filled: true,
+                      label: Text("Address"),
+                      hintText: "Address",
+                      border: OutlineInputBorder(),
                     ),
                   ),
-                  onPressed: () {
-                    _showRegisterDialog();
-                  },
-                  child: const Text(
-                    "Register",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 16,
-                  ),),
                 ),
-              ),
+                Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: TextFormField(
+                    controller: dobController,
+                    decoration: const InputDecoration(
+                      fillColor: Colors.white,
+                      filled: true,
+                      label: Text("Date of Birth"),
+                      hintText: "Date of Birth",
+                      border: OutlineInputBorder(),
+                    ),
+                    onTap: () {
+                      _selectDate(context);
+                    },
+                    readOnly: true,
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: DropdownButtonFormField<String>(
+                    decoration: const InputDecoration(
+                      fillColor: Colors.white,
+                      filled: true,
+                      labelText: "Gender",
+                      border: OutlineInputBorder(),
+                    ),
+                    value: selectedGender,
+                    items: ['<Select Gender>', 'Male', 'Female', 'Other']
+                        .map((gender) => DropdownMenuItem<String>(
+                              value:
+                                  gender == '<Select Gender>' ? null : gender,
+                              child: Text(gender),
+                            ))
+                        .toList(),
+                    onChanged: (value) {
+                      setState(() {
+                        selectedGender = value;
+                      });
+                    },
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: TextFormField(
+                    controller: emailController,
+                    decoration: const InputDecoration(
+                      fillColor: Colors.white,
+                      filled: true,
+                      labelText: "Email Id",
+                      hintText: "Email Id",
+                      border: OutlineInputBorder(),
+                    ),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return null;
+                      } else if (!validEmail()) {
+                        return "Email Not Valid.(You can comtinue without email)";
+                      }
+                      return null;
+                    },
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: SizedBox(
+                    width: double.infinity,
+                    height: 50,
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.blue[900],
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8)),
+                      ),
+                      onPressed: () {
+                        if (_formKey.currentState!.validate()) {
+                          _showRegisterDialog();
+                        } else if (!validEmail()) {
+                          showSnackBar(context, "Invalid Email Address.");
+                        } else {
+                          showSnackBar(
+                              context, "Please Enter Mandatory Fields.");
+                        }
+                      },
+                      child: const Text(
+                        "Register",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 16,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: SizedBox(
+                    width: double.infinity,
+                    height: 50,
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.blue[900],
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8)),
+                      ),
+                      onPressed: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    const RegisteredStudentScreen())).then(
+                          (onValue) {
+                            _loadStudentList();
+                          },
+                        );
+                      },
+                      child: const Text(
+                        "Show Registered Students",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 16,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-                child: ElevatedButton(
-                  onPressed: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const RegisteredStudentScreen()));
-                  },
-                  child: const Text("Show Registred Students"),
-                ),
-              ),
-          ],
+          ),
         ),
       ),
     );
   }
-   void _showRegisterDialog() {
+
+  Future<void> _selectDate(BuildContext context) async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(1900),
+      lastDate: DateTime(2100),
+    );
+    if (picked != null) {
+      setState(() {
+        dobController.text = "${picked.toLocal()}".split(' ')[0];
+      });
+    }
+  }
+
+  void _showRegisterDialog() {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
           title: const Text("Confirmation"),
-          content: const Text("By clicking yes, you are confirming your registration."),
+          content: const Text(
+              "By clicking yes, you are confirming your registration."),
           actions: [
-            TextButton(onPressed: () {
-              Navigator.of(context).pop();
-            }, child: const Text("No"),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text("No"),
             ),
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
-                if (namecontroller.text.isEmpty || addressController.text.isEmpty || dobController.text.isEmpty || genderController.text.isEmpty || courseController.text.isEmpty || contactController.text.isEmpty || emailController.text.isEmpty) {
-                  _showSnackBar(context, "Please Enter all Fields.");
-                }else{setState(() {
-                    studentList.add(Student(namecontroller.text, courseController.text));
-                    saveStudentList(studentList);
+                if (_formKey.currentState!.validate()) {
+                  setState(() {
+                    studentList!.add(Student(
+                        nameController.text,
+                        selectedCourse!,
+                        selectedGender,
+                        addressController.text,
+                        contactController.text,
+                        dobController.text,
+                        emailController.text));
+                    saveStudentList(studentList!);
                   });
-                  _showSnackBar(context, "Registration Successful.");
-                  
+
+                  showSnackBar(context, "Registration Successful.");
+
+                  _formKey.currentState?.reset();
+                  setState(() {
+                    nameController.clear();
+                    selectedCourse = null;
+                    selectedGender = null;
+                    addressController.clear();
+                    dobController.clear();
+                    emailController.clear();
+                    contactController.clear();
+                  });
                 }
               },
               child: const Text("Yes"),
@@ -180,12 +400,24 @@ class _FormSreenState extends State<FormSreen> {
       },
     );
   }
-    void _showSnackBar(BuildContext context, String message) {
-    final snackBar = SnackBar(
-      content: Text(message),
-      duration: const Duration(seconds: 2),
-      backgroundColor: Colors.black87,
+
+  String? fieldIsEmpty(String? value) {
+    if (value == null || value.isEmpty) {
+      return "Please fill this field.";
+    }
+    return null;
+  }
+
+  Widget labelWithAsterisk(String label) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Text(label),
+        const Text(
+          ' *',
+          style: TextStyle(color: Colors.red),
+        ),
+      ],
     );
-    ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 }
